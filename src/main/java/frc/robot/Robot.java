@@ -14,20 +14,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
-
-  private final RobotContainer m_robotContainer;
 
   
-  public Robot() {
-    
-  }
+  public Robot() {}
 
   
   @Override
-  public void robotPeriodic() {
-    
-  }
+  public void robotPeriodic() {}
 
   @Override
   public void disabledInit() {}
@@ -36,25 +29,19 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {}
 
   @Override
-  public void autonomousInit() {
-
-  }
+  public void autonomousInit() {}
 
   @Override
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {
-
-  }
+  public void teleopInit() {}
 
   @Override
   public void teleopPeriodic() {}
 
   @Override
-  public void testInit() {
-
-  }
+  public void testInit() {}
 
   @Override
   public void testPeriodic() {}
