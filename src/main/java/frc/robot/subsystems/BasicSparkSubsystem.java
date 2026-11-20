@@ -76,26 +76,26 @@ public class BasicSparkSubsystem {
             config.closedLoop.feedForward
                 .kS(slot0Ks, ClosedLoopSlot.kSlot0)
                 .kS(slot1Ks, ClosedLoopSlot.kSlot1)
-                .kV(slot1kV, ClosedLoopSlot.kSlot1);
+                .kV(slot1kV, ClosedLoopSlot.kSlot1);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
             
             config.signals
-                .appliedOutputPeriodMs(20)
-                .outputCurrentPeriodMs(100)
-                .busVoltagePeriodMs(100)
+                .appliedOutputPeriodMs(20) // See what voltage motor is using
+                .outputCurrentPeriodMs(100) // Catch current spike
+                .busVoltagePeriodMs(100) // Monitor battery voltage
                 .faultsAlwaysOn(true)
-                .faultsPeriodMs(1000)
-                .isAccumulationAlwaysOn(true)
-                .motorTempraturePeriodMs(1000)
+                .faultsPeriodMs(1000) // Updates once a second, faults don't need hihg update rate
+                .iAccumulationAlwaysOn(true) // tracks the integral accumulator for PID
+                .motorTemperaturePeriodMs(1000)
                 .primaryEncoderPositionAlwaysOn(true)
                 .primaryEncoderPositionPeriodMs(20)
                 .primaryEncoderVelocityAlwaysOn(true)
-                .primaryEncoderVelocityPeriodMs(20)
-                .warningAlwaysOn(true)
-                .warningsPeriodMs(1000);
+                .primaryEncoderVelocityPeriodMs(20) // Updates at robot loop rate
+                .warningsAlwaysOn(true)
+                .warningsPeriodMs(1000); // Updates once a second, warnings don't need high update rates
 
             
             motor.clearFaults();
-
+            // Apply config to the motor (persist safe parameters by default)
             motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -109,11 +109,13 @@ public class BasicSparkSubsystem {
     }
 
     public void runPosition(double position){
+        // slot 0 for voltage
         setPIDSlot(ClosedLoopSlot.kSlot0);
         controller.setSetpoint(position, ControlType.kPosition, closedLoopSlot);
     }
 
     public void runVelocity(double velocity){
+        // slot 1 for velocity
         setPIDSlot(ClosedLoopSlot.kSlot1);
         controller.setSetpoint(velocity, ControlType.kPosition, closedLoopSlot);
     }
@@ -127,6 +129,8 @@ public class BasicSparkSubsystem {
     }
 
     public void setBrakeMode(boolean brake){
+        // Only change the brake mode if it is different from the current mode
+        // Setting a new configuration takes cycle time on the robot, so we want to avoid it doing unessarily.
         if(isBrakeMode != brake){
             SparkMaxConfig configuration = new SparkMaxConfig();
             configuration.idleMode(brake? SparkMaxConfig.IdleMode.kBrake:SparkMaxConfig.IdleMode.kBrake);
